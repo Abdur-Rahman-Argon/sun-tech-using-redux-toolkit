@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import ProductCard from "../components/ProductCard";
+import { inStock, toggleBrand } from "../features/filter/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Home = () => {
   const [products, setProducts] = useState([]);
+
+  const state = useSelector((state) => state);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetch("http://localhost:5000/product")
@@ -10,14 +16,8 @@ const Home = () => {
       .then((data) => setProducts(data));
   }, []);
 
-  // const state = useSelector((state) => state);
-
-  const stock = ""; //useSelector((state) => state.filters?.filters?.stock);
-  const brand = ""; //useSelector((state) => state.filters?.filters?.brand);
-
-  // const dispatch = useDispatch();
-
-  // console.log(state);
+  const stock = useSelector((state) => state.filter.inStock);
+  const brand = useSelector((state) => state.filter?.brand);
 
   let content;
 
@@ -30,14 +30,7 @@ const Home = () => {
   if (products?.length === 0) {
     content = <p> product is empty </p>;
   }
-  console.log(products?.filter((product) => product.brand === "amd"));
-
-  // if (products.length && (stock || brand.length)) {
-  //   content = products
-  //     .filter((product) => product.status === true)
-  //     .filter((product) => brand.includes(product.brand))
-  //     .map((product) => <ProductCard product={product} />);
-  // }
+  console.log(state); //(products?.filter((product) => product.brand === "amd"));
 
   if (products.length && (stock || brand.length)) {
     content = products
@@ -55,6 +48,7 @@ const Home = () => {
           return product;
         }
       })
+
       .map((product) => <ProductCard product={product} />);
   }
 
@@ -62,7 +56,7 @@ const Home = () => {
     <div className=" mx-20">
       <div className="mb-10 flex justify-end gap-5">
         <button
-          // onClick={() => dispatch(toggleStock())}
+          onClick={() => dispatch(inStock())}
           className={` ${
             stock && activeClass
           }  border px-3 py-2 rounded-full font-semibold`}
@@ -70,7 +64,7 @@ const Home = () => {
           In Stock
         </button>
         <button
-          //onClick={() => dispatch(toggleBrand("amd"))}
+          onClick={() => dispatch(toggleBrand("amd"))}
           className={`${
             brand.includes("amd") && activeClass
           } border px-3 py-2 rounded-full font-semibold`}
@@ -78,7 +72,7 @@ const Home = () => {
           AMD
         </button>
         <button
-          //onClick={() => dispatch(toggleBrand("intel"))}
+          onClick={() => dispatch(toggleBrand("intel"))}
           className={`${
             brand.includes("intel") && activeClass
           } border px-3 py-2 rounded-full font-semibold`}

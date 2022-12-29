@@ -8,10 +8,20 @@ const filterSlice = createSlice({
   initialState,
   reducers: {
     inStock: (state, action) => {
-      state.inStock = false;
+      state.inStock = !state.inStock;
+    },
+    toggleBrand: (state, action) => {
+      //   state.brand.push("action.payload");
+      const matched = state.brand.find((b) => b === action.payload);
+      console.log(action, matched);
+      if (!matched) {
+        state.brand.push(action.payload);
+      } else {
+        state.brand = state.brand.filter((b) => b !== action.payload);
+      }
     },
   },
 });
 
-export const { inStock } = filterSlice.actions;
+export const { inStock, toggleBrand } = filterSlice.actions;
 export default filterSlice.reducer;
